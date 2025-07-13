@@ -1,0 +1,33 @@
+.stat-bar {
+    height: 18px;
+    background-color: rgb(34, 34, 34);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0;
+    width: 250px;
+    margin-top: 4px;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+.bar-fill {
+    height: 100%;
+    width: 100%;
+    transition: width 0.2s ease;
+}
+
+.stat-bar .bar-fill {
+    background-color: green;
+}
+
+.stat-bar.health-bar .bar-fill {
+    background-color: rgb(192, 57, 43);
+}
+
+.stat-bar.stamina-bar .bar-fill {
+    background-color: rgb(241, 196, 15);
+}
+
+.stat-bar.mana-bar .bar-fill {
+    background-color: rgb(41, 128, 185);
+}

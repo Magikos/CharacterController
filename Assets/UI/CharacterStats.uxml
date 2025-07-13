@@ -1,0 +1,8 @@
+<ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UI/CharacterStats.uss?fileID=7433441132597879392&amp;guid=49a5226f1008af2499b3e2f19a7c27b5&amp;type=3#CharacterStats" />
+    <ui:VisualElement name="stat-bars" class="stat-bars">
+        <StatBar name="health-bar" class="stat-bar health-bar" />
+        <StatBar name="stamina-bar" class="stat-bar stamina-bar" />
+        <StatBar name="mana-bar" class="stat-bar mana-bar" />
+    </ui:VisualElement>
+</ui:UXML>
