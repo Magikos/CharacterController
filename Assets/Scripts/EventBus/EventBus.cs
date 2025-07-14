@@ -90,4 +90,5 @@ public static class EventBus<TEvent> where TEvent : struct, IGameEvent
         while (_deferredQueue.Count > 0)
             _deferredQueue.Dequeue()?.Invoke();
     }
+
 }
