@@ -10,5 +10,7 @@ public interface IState<TContext> : IDisposable
     void FixedUpdate(TContext context);
     void LateUpdate(TContext context);
     Type? EvaluateExit(TContext context); // Formerly GetNextState
+    void ReEnter(TContext context);
+
     bool IsBlocking { get; } // Optional exit prevention
 }

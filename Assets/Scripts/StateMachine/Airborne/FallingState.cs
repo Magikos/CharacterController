@@ -50,14 +50,6 @@ public class FallingState : AirborneBaseState
         Logwin.Log("[FallingState]", $"Falling - Velocity: {velocity.y:F2}, Fall Distance: {fallDistance:F1}", LogwinParam.Color(Color.red));
     }
 
-    public override System.Type EvaluateExit(CharacterContext context)
-    {
-        // FallingState should only stay in falling or exit the airborne system entirely
-        // The top-level Airborne -> Grounded transition will handle the switch
-        // Grounded.Enter() will decide which specific landing state to use
-        return null;
-    }
-
     public override void Exit(CharacterContext context)
     {
         float fallDistance = context.Motor.FallStartHeight - context.References.Transform.position.y;

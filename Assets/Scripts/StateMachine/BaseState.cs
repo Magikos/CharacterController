@@ -11,6 +11,7 @@ public abstract class BaseState<TContext> : IState<TContext>
     public virtual void FixedUpdate(TContext context) { }
     public virtual void LateUpdate(TContext context) { }
     public virtual Type? EvaluateExit(TContext context) => null;
+    public virtual void ReEnter(TContext context) => Enter(context);
     public virtual bool IsBlocking => false;
 
     protected virtual void PlayAnimation(Animator animator, int animHash, float transitionDuration = 0.1f)

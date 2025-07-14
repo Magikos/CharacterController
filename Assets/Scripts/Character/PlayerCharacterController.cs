@@ -49,7 +49,8 @@ public class PlayerCharacterController : BaseCharacterController<CharacterContex
                 ResolveTo = (_, _) => typeof(Grounded)
             }
         )
-        .WithInitialState(_context, typeof(Grounded));
+        .WithInitialState(_context, typeof(Grounded))
+        .WithNullDefault(new ErrorState("State not found"));
     }
 
     protected override void InitializeSensors(CharacterContext context)
