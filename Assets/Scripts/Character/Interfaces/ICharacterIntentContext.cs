@@ -1,10 +1,11 @@
 
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Interface for intent context.
 /// </summary>
-public interface ICharacterIntentContext
+public interface ICharacterIntentContext : IDisposable
 {
     Vector3 DesiredVelocity { get; set; }
     Quaternion DesiredRotation { get; set; }

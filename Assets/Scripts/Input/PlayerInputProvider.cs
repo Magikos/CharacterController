@@ -1,11 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Input provider for player-controlled characters using the Unity Input System.
-/// Converts raw input into world-relative movement intent.
-/// </summary>
-[RequireComponent(typeof(PlayerControls))]
-public class PlayerInputProvider : MonoBehaviour, IInputProvider
+public class PlayerInputProvider : IInputProvider
 {
     private PlayerControls _controls;
     private Transform _cameraTransform;
@@ -16,12 +11,7 @@ public class PlayerInputProvider : MonoBehaviour, IInputProvider
         _controls.Character.Enable();
 
         _cameraTransform = Camera.main.transform;
-        context.CameraTransform = _cameraTransform;
-    }
-
-    public void Destroy()
-    {
-        Dispose();
+        context.References.CameraTransform = _cameraTransform;
     }
 
     public void Dispose()

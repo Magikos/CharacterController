@@ -1,9 +1,10 @@
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Interface for sensor context - handles environmental detection data.
 /// </summary>
-public interface ICharacterSensorContext
+public interface ICharacterSensorContext : IDisposable
 {
     // Ground Detection
     bool IsGrounded { get; set; }

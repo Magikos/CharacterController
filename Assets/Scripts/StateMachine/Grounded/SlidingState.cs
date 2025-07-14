@@ -12,7 +12,7 @@ public class SlidingState : GroundedBaseState
 
     public override void Enter(CharacterContext context)
     {
-        PlayAnimation(context.Animator, SlideAnimHash, 0.1f);
+        PlayAnimation(context.References.Animator, SlideAnimHash, 0.1f);
     }
 
     public override void FixedUpdate(CharacterContext context)
@@ -36,7 +36,7 @@ public class SlidingState : GroundedBaseState
 #if UNITY_EDITOR
     public void DrawGizmos(CharacterContext context)
     {
-        Vector3 position = context.GameObject.transform.position;
+        Vector3 position = context.References.GameObject.transform.position;
 
         // Draw sliding direction
         Vector3 slideDir = context.Sensor.SlopeDirection * 2f;

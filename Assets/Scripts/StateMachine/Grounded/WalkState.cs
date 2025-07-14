@@ -4,7 +4,7 @@ public class WalkState : GroundedBaseState
 {
     private static readonly int WalkAnimHash = Animator.StringToHash("Walk");
 
-    public override void Enter(CharacterContext context) => PlayAnimation(context.Animator, WalkAnimHash, 0.1f);
+    public override void Enter(CharacterContext context) => PlayAnimation(context.References.Animator, WalkAnimHash, 0.1f);
 
     public override void FixedUpdate(CharacterContext context)
     {

@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-public interface IAdaptiveStateMachine<TContext>
+public interface IAdaptiveStateMachine<TContext> : IDisposable
 {
     IState<TContext>? CurrentState { get; }
     bool IsBlocking { get; }

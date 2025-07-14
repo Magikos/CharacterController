@@ -1,6 +1,6 @@
 using System;
 
-public interface ICharacterVitalsSystem
+public interface ICharacterVitalsSystem : IDisposable
 {
     float Health { get; set; }
     float Stamina { get; set; }

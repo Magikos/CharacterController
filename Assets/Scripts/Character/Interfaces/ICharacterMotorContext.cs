@@ -1,8 +1,10 @@
 using UnityEngine;
+using System;
+
 /// <summary>
 /// Interface for motion context - pure motion and physics data.
 /// </summary>
-public interface ICharacterMotorContext
+public interface ICharacterMotorContext : IDisposable
 {
     // Core Motion
     Vector3 CurrentVelocity { get; set; }

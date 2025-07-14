@@ -1,9 +1,9 @@
 #nullable enable
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using System;
+
 
 public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>
 {
@@ -99,5 +99,12 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>
     {
         _currentState?.Exit(context);
         _currentState = null;
+    }
+
+    public void Dispose()
+    {
+        // Clean up resources if necessary
+        foreach (var state in _stateCache.Values) { state.Dispose(); }
+        _stateCache.Clear();
     }
 }

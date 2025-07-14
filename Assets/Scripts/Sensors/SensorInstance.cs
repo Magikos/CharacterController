@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
-public class SensorInstance<TContext>
+public class SensorInstance<TContext> : IDisposable
 {
     private ISensor<TContext> _sensor;
     private SensorUpdateMode _currentMode;
@@ -60,5 +61,11 @@ public class SensorInstance<TContext>
             SensorUpdateMode.Disabled => int.MaxValue,
             _ => 1
         };
+    }
+
+    public void Dispose()
+    {
+        _sensor.Dispose();
+        _sensor = null;
     }
 }

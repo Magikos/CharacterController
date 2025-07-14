@@ -50,6 +50,12 @@ public class CharacterSensorContext : ICharacterSensorContext
         // This could include setting up colliders, raycasts, etc.
     }
 
+    public void Dispose()
+    {
+        // Clean up any resources if necessary
+        // This could include removing event listeners, nullifying references, etc.
+    }
+
     public void ResetFrameContext()
     {
         // Reset frame-specific data

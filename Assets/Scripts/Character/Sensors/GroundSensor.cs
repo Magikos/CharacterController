@@ -45,8 +45,7 @@ public class GroundSensor : BaseSensor<CharacterContext>
             context.Sensor.LastGroundedHeight = context.References.Transform.position.y;
             context.Sensor.GroundNormal = closestHit.normal;
             context.Sensor.GroundContactPoint = closestHit.point;
-            context.Sensor.DesiredGroundPosition = new Vector3(context.References.Transform.position.x, closestHit.point.y, context.References.Transform.position.z
-            );
+            context.Sensor.DesiredGroundPosition = new Vector3(context.References.Transform.position.x, closestHit.point.y, context.References.Transform.position.z);
         }
         else
         {

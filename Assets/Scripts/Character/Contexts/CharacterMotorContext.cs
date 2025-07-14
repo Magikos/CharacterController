@@ -24,6 +24,11 @@ public class CharacterMotorContext : ICharacterMotorContext
         // Initialize any references or state here
     }
 
+    public void Dispose()
+    {
+        // Clean up any resources if necessary
+    }
+
     public void ResetFrameContext()
     {
         // Reset frame-specific state

@@ -4,7 +4,7 @@ using UnityEngine;
 /// The base controller that owns all character motion systems.
 /// Designed for both players and AI, modular, generic, and context-driven.
 /// </summary>
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider), typeof(Animator))]
 public class BaseCharacterController<TContext> : MonoBehaviour where TContext : class, ICharacterContext, new()
 {
     // --- Shared Context ---
@@ -25,44 +25,46 @@ public class BaseCharacterController<TContext> : MonoBehaviour where TContext : 
     // --- Properties ---
     public TContext GetContext() => _context;
 
-    protected virtual void Awake()
+    protected virtual void OnEnable()
     {
-        var animator = GetComponent<Animator>();
-        _input = GetComponent<IInputProvider>();
-        _motor = GetComponent<ICharacterMotor>();
-
         _context = new TContext();
-        _context.Initialize(gameObject, animator);
+        _context.Initialize(gameObject);
 
+        _input = new PlayerInputProvider();
         _input?.Initialize(_context);
+
+        _motor = new CharacterMotor();
         _motor?.Initialize(_context);
+
+        InitializeSensors(_context);
+
+        _sensorManager?.UpdateSensors(_context); // Update sensors immediately to get initial ground state before state machine starts
+        InitializeStateMachine(_context);
     }
 
+    protected virtual void OnDisable()
+    {
+        // Cleanup handled by Unity lifecycle
+        _input?.Dispose();
+        _sensorManager?.Dispose();
+        _stateMachine?.Dispose();
+        _motor?.Dispose();
+        _context.Dispose();
+    }
+
+    protected virtual void Awake() { }
     protected virtual void Start()
     {
-        InitializeSensors();
-
-        // Initialize sensors first
-        _sensorManager?.Initialize(_context);
-
-        // Update sensors immediately to get initial ground state before state machine starts
-        _sensorManager?.UpdateSensors(_context);
-
         // Debug: Check if ground detection is working
         Logwin.Log("CharacterController", $"After sensor update - IsGrounded: {_context.Sensor.IsGrounded}, Position: {transform.position}");
-
-        InitializeStateMachine();
-
-        // Debug: Check state machine initial state
-        Logwin.Log("CharacterController", $"State machine initialized, IsGrounded: {_context.Sensor.IsGrounded}");
     }
 
-    protected virtual void InitializeStateMachine()
+    protected virtual void InitializeStateMachine(TContext context)
     {
         // Subclass responsibility
     }
 
-    protected virtual void InitializeSensors()
+    protected virtual void InitializeSensors(TContext context)
     {
         // Subclass responsibility
     }
@@ -83,15 +85,6 @@ public class BaseCharacterController<TContext> : MonoBehaviour where TContext : 
         _context.FixedDeltaTime = Time.fixedDeltaTime;
 
         _stateMachine?.FixedUpdate(_context);
-
-#if UNITY_EDITOR && DEBUG
-        // Validate that the current state set appropriate intent (debug only)
-        if (_context.Intent is CharacterIntentContext intentContext)
-        {
-            intentContext.ValidateIntentWasSet();
-        }
-#endif
-
         _motor?.ApplyMotion(_context);
     }
 
@@ -100,8 +93,4 @@ public class BaseCharacterController<TContext> : MonoBehaviour where TContext : 
         _stateMachine?.LateUpdate(_context);
     }
 
-    protected virtual void OnDestroy()
-    {
-        // Cleanup handled by Unity lifecycle
-    }
 }

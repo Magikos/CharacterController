@@ -1,7 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
-public interface ISensorManager<TContext>
+public interface ISensorManager<TContext> : IDisposable
 {
     void Initialize(TContext context);
     void UpdateSensors(TContext context);

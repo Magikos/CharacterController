@@ -28,4 +28,9 @@ internal class CharacterReferences : ICharacterReferences
             Debug.LogWarning("Animator component not found on the character. Animation states may not work correctly.");
         }
     }
+
+    public void Dispose()
+    {
+        // Clean up any resources if necessary
+    }
 }

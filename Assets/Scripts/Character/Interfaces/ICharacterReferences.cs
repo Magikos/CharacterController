@@ -1,6 +1,7 @@
 using UnityEngine;
+using System;
 
-public interface ICharacterReferences
+public interface ICharacterReferences : IDisposable
 {
     GameObject GameObject { get; }
     Transform Transform { get; }

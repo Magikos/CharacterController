@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(Animator))]
 public class PlayerCharacterController : BaseCharacterController<CharacterContext>
 {
-    protected override void InitializeStateMachine()
+    protected override void InitializeStateMachine(CharacterContext context)
     {
         _stateMachine = new AdaptiveStateMachine<CharacterContext>()
         .WithStates(
@@ -52,61 +52,16 @@ public class PlayerCharacterController : BaseCharacterController<CharacterContex
         .WithInitialState(_context, typeof(Grounded));
     }
 
-    protected override void InitializeSensors()
+    protected override void InitializeSensors(CharacterContext context)
     {
         // Single integrated sensor - much cleaner!
         _sensorManager = new SensorManager<CharacterContext>(transform)
             .WithSensor(new GroundSensor())
-            .WithTransition(BuildIntegratedSensorTransitions());
+            .WithTransition(CharacterSensorManagerBuilder.BuildDefaultTransitions());
+
+        _sensorManager.Initialize(context);
     }
 
-    private SensorTransition<CharacterContext>[] BuildIntegratedSensorTransitions()
-    {
-        return new SensorTransition<CharacterContext>[]
-        {
-            // Idle state - minimal sensor updates
-            new SensorTransition<CharacterContext>
-            {
-                SensorType = typeof(IntegratedCharacterSensor),
-                Mode = SensorUpdateMode.Minimal,
-                Condition = ctx => IsIdle(ctx)
-            },
-            
-            // Moving state - reduced sensor updates
-            new SensorTransition<CharacterContext>
-            {
-                SensorType = typeof(IntegratedCharacterSensor),
-                Mode = SensorUpdateMode.Reduced,
-                Condition = ctx => IsMoving(ctx)
-            },
-            
-            // High activity - every frame updates
-            new SensorTransition<CharacterContext>
-            {
-                SensorType = typeof(IntegratedCharacterSensor),
-                Mode = SensorUpdateMode.EveryFrame,
-                Condition = ctx => IsHighActivity(ctx)
-            }
-        };
-    }
-
-    private bool IsIdle(CharacterContext ctx)
-    {
-        return ctx.Motor.CurrentVelocity.magnitude <= 0.1f && ctx.Sensor.IsGrounded;
-    }
-
-    private bool IsMoving(CharacterContext ctx)
-    {
-        return ctx.Motor.CurrentVelocity.magnitude > 0.1f && ctx.Motor.CurrentVelocity.magnitude <= 3f && ctx.Sensor.IsGrounded;
-    }
-
-    private bool IsHighActivity(CharacterContext ctx)
-    {
-        return !ctx.Sensor.IsGrounded ||
-               ctx.Motor.CurrentVelocity.magnitude > 3f ||
-               ctx.Sensor.IsOnSlope ||
-               ctx.Sensor.HasStepAhead;
-    }
 
     protected override void Awake()
     {

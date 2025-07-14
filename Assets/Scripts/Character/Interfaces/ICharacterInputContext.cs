@@ -1,8 +1,7 @@
 using UnityEngine;
-/// <summary>
-/// Interface for input context.
-/// </summary>
-public interface ICharacterInputContext
+using System;
+
+public interface ICharacterInputContext : IDisposable
 {
     Vector2 MoveInput { get; set; }
     Vector3 MoveDirection { get; set; }

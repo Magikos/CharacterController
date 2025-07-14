@@ -52,4 +52,12 @@ public abstract class BaseSensor<TContext> : ISensor<TContext> where TContext : 
         Logwin.Log("IntegratedSensor", $"Initialized {_selfColliders.Count} self-colliders for exclusion");
     }
 
+    public virtual void Dispose()
+    {
+        // Clean up resources if necessary
+        _selfColliders.Clear();
+        _hits = null;
+        _collider = null;
+        excludeLayers = 0;
+    }
 }

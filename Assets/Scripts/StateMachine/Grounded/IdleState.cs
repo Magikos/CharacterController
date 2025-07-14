@@ -4,7 +4,7 @@ public class IdleState : GroundedBaseState
 {
     private static readonly int IdleAnimHash = Animator.StringToHash("Idle");
 
-    public override void Enter(CharacterContext context) => PlayAnimation(context.Animator, IdleAnimHash, 0.1f);
+    public override void Enter(CharacterContext context) => PlayAnimation(context.References.Animator, IdleAnimHash, 0.1f);
 
     public override void FixedUpdate(CharacterContext context)
     {

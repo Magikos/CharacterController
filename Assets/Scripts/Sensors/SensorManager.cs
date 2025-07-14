@@ -58,6 +58,15 @@ public class SensorManager<TContext> : ISensorManager<TContext>
         _initialized = true;
     }
 
+    public void Dispose()
+    {
+        foreach (var sensor in _sensors.Values) { sensor.Dispose(); }
+
+        _sensors.Clear();
+        _transitions.Clear();
+        _initialized = false;
+    }
+
     public void UpdateSensors(TContext context)
     {
         if (!_initialized) throw new InvalidOperationException("SensorManager must be initialized before updating sensors");

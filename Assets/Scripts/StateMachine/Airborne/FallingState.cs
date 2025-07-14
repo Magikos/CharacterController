@@ -11,13 +11,13 @@ public class FallingState : AirborneBaseState
 
     public override void Enter(CharacterContext context)
     {
-        PlayAnimation(context.Animator, FallAnim);
+        PlayAnimation(context.References.Animator, FallAnim);
         AirControlFactor = LocomotionSettings.FallingAirControl; // Set air control for falling
 
         // Track fall start if we're just starting to fall
         if (context.Motor.CurrentVelocity.y >= 0)
         {
-            context.Motor.FallStartHeight = context.Transform.position.y;
+            context.Motor.FallStartHeight = context.References.Transform.position.y;
         }
 
         Logwin.Log("[FallingState]", $"Started falling from height: {context.Motor.FallStartHeight}");
@@ -44,7 +44,7 @@ public class FallingState : AirborneBaseState
         }
 
         // Update fall distance calculation for logging
-        float currentHeight = context.Transform.position.y;
+        float currentHeight = context.References.Transform.position.y;
         float fallDistance = context.Motor.FallStartHeight - currentHeight;
 
         Logwin.Log("[FallingState]", $"Falling - Velocity: {velocity.y:F2}, Fall Distance: {fallDistance:F1}", LogwinParam.Color(Color.red));
@@ -60,7 +60,7 @@ public class FallingState : AirborneBaseState
 
     public override void Exit(CharacterContext context)
     {
-        float fallDistance = context.Motor.FallStartHeight - context.Transform.position.y;
+        float fallDistance = context.Motor.FallStartHeight - context.References.Transform.position.y;
         Logwin.Log("[FallingState]", $"Finished falling - Distance: {fallDistance:F1}, Final velocity: {context.Motor.CurrentVelocity.y:F2}");
     }
 }

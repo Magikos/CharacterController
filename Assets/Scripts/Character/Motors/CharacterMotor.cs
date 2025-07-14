@@ -8,8 +8,7 @@ using MiniTools.BetterGizmos;
 /// Responsible for applying motion, gravity, and velocity resolution to the character.
 /// Contains embedded motor behaviors for clean, integrated physics processing.
 /// </summary>
-[RequireComponent(typeof(Rigidbody))]
-public class CharacterMotor : MonoBehaviour, ICharacterMotor
+public class CharacterMotor : ICharacterMotor
 {
     #region Components & Context
     private Rigidbody _rigidbody;
@@ -53,7 +52,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
     #region Initialization
     public void Initialize(ICharacterContext context)
     {
-        _rigidbody = GetComponent<Rigidbody>();
+        _rigidbody = context.References.GameObject.GetComponent<Rigidbody>();
         _rigidbody.isKinematic = true;
         _rigidbody.useGravity = false;
         _rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
@@ -63,6 +62,14 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
         _context.Motor.CurrentVelocity = Vector3.zero;
         _context.Motor.Gravity = gravity;
     }
+
+    public void Dispose()
+    {
+        // Clean up resources if necessary
+        _rigidbody = null;
+        _context = null;
+    }
+
     #endregion
 
     #region Main Physics Loop
@@ -87,7 +94,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
 
         // Update context and apply to rigidbody
         context.Motor.CurrentVelocity = velocity;
-        _rigidbody.MovePosition(transform.position + velocity * context.FixedDeltaTime);
+        _rigidbody.MovePosition(context.References.Transform.position + velocity * context.FixedDeltaTime);
 
         // Apply rotation
         ProcessRotation(context);
@@ -175,7 +182,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
 
     private void ProcessRotation(ICharacterContext context)
     {
-        Quaternion currentRotation = transform.rotation;
+        Quaternion currentRotation = context.References.Transform.rotation;
         Quaternion targetRotation = context.Intent.DesiredRotation;
 
         // Only apply rotation if there's a meaningful difference
@@ -262,7 +269,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
         if (_context.Sensor.StepHeight < 0.05f) return false;
 
         Vector3 moveDirection = _context.Motor.CurrentVelocity.normalized;
-        Vector3 stepDirection = (_context.Sensor.StepPosition - transform.position).normalized;
+        Vector3 stepDirection = (_context.Sensor.StepPosition - _context.References.Transform.position).normalized;
         return Vector3.Dot(moveDirection, stepDirection) > 0.5f;
     }
 
@@ -270,7 +277,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
     {
         _isSteppingUp = true;
         _stepUpProgress = 0f;
-        _stepStartPosition = transform.position;
+        _stepStartPosition = _context.References.Transform.position;
         _stepTargetPosition = _context.Sensor.StepPosition;
     }
 
@@ -282,7 +289,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
         {
             // Step-up complete
             _isSteppingUp = false;
-            transform.position = _stepTargetPosition;
+            _context.References.Transform.position = _stepTargetPosition;
 
             Vector3 forwardDirection = (_stepTargetPosition - _stepStartPosition).normalized;
             forwardDirection.y = 0;
@@ -292,7 +299,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
         // Calculate smooth step-up motion
         float easedProgress = stepUpCurve.Evaluate(_stepUpProgress);
         Vector3 targetPosition = Vector3.Lerp(_stepStartPosition, _stepTargetPosition, easedProgress);
-        Vector3 deltaPosition = targetPosition - transform.position;
+        Vector3 deltaPosition = targetPosition - _context.References.Transform.position;
         return deltaPosition / _context.FixedDeltaTime;
     }
     #endregion
@@ -304,7 +311,7 @@ public class CharacterMotor : MonoBehaviour, ICharacterMotor
         if (!Application.isPlaying || _context == null) return;
         if (!showVelocityGizmos && !showPhysicsOverrides) return;
 
-        Vector3 position = transform.position;
+        Vector3 position = _context.References.Transform.position;
 
         if (showVelocityGizmos)
         {

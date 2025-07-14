@@ -18,6 +18,11 @@ public class CharacterInputContext : ICharacterInputContext
         // Initialize any references or state here
     }
 
+    public void Dispose()
+    {
+        // Clean up any resources if necessary
+    }
+
     public void ResetFrameContext()
     {
         MoveInput = Vector2.zero;

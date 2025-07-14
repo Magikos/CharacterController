@@ -20,7 +20,7 @@ public class JumpState : GroundedBaseState
     public override void Enter(CharacterContext context)
     {
         context.Vitals.DrainStamina(10f);
-        PlayAnimation(context.Animator, JumpAnim);
+        PlayAnimation(context.References.Animator, JumpAnim);
 
         _jumpStartTime = Time.time;
         _jumpInputReleased = false;

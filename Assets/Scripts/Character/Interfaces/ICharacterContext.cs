@@ -1,9 +1,10 @@
 using UnityEngine;
+using System;
 
 /// <summary>
 /// Interface that defines the full character context structure.
 /// </summary>
-public interface ICharacterContext
+public interface ICharacterContext : IDisposable
 {
     float DeltaTime { get; set; }
     float FixedDeltaTime { get; set; }

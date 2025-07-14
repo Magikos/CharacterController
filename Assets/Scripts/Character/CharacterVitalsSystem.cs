@@ -27,4 +27,10 @@ public class CharacterVitalsSystem : ICharacterVitalsSystem
 
         EventBus<StaminaChangedEvent>.Raise(new StaminaChangedEvent(staminaBefore, Stamina));
     }
+
+    public void Dispose()
+    {
+        // Clean up resources if necessary
+        // This could include unsubscribing from events or releasing references
+    }
 }

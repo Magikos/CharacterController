@@ -30,4 +30,14 @@ public class CharacterContext : ICharacterContext
         Intent.Initialize(owner);
         Motor.Initialize(owner);
     }
+
+    public void Dispose()
+    {
+        Input.Dispose();
+        Sensor.Dispose();
+        Intent.Dispose();
+        Motor.Dispose();
+        Vitals.Dispose();
+        References.Dispose();
+    }
 }

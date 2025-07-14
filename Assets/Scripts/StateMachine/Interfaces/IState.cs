@@ -2,7 +2,7 @@
 
 using System;
 
-public interface IState<TContext>
+public interface IState<TContext> : IDisposable
 {
     void Enter(TContext context);
     void Exit(TContext context);

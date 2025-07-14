@@ -21,6 +21,11 @@ public class CharacterIntentContext : ICharacterIntentContext
         // Initialize any references or state here
     }
 
+    public void Dispose()
+    {
+        // Clean up any resources if necessary
+    }
+
     /// <summary>
     /// Reset all frame-based intent data to neutral/default state.
     /// Called each frame before state updates to provide a clean slate.
