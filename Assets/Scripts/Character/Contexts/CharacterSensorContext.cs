@@ -3,8 +3,13 @@ using UnityEngine;
 /// <summary>
 /// Concrete implementation of sensor context.
 /// </summary>
-public class CharacterSensorContext : ICharacterSensorContext
+public class CharacterSensorContext
 {
+    // Core Sensor Data
+    public float BaseSensorRange { get; set; } = 0.1f; // Default sensor range for ground detection
+    public float BaseCastLength { get; set; } = 0.1f; // Default cast length for ground detection
+    public int ExcludeLayers { get; set; } = LayerMask.GetMask("UI", "Ignore Raycast"); // Default layers to ignore in sensor checks
+
     // Ground Detection
     public bool IsGrounded { get; set; }
     public float TimeSinceLastGrounded { get; set; }
@@ -12,9 +17,11 @@ public class CharacterSensorContext : ICharacterSensorContext
     public float LastGroundedHeight { get; set; }
 
     // Surface Information
+    public Vector3 FeetPosition { get; set; }
+    public float GroundDistance { get; set; }
     public Vector3 GroundNormal { get; set; } = Vector3.up;
     public Vector3 GroundContactPoint { get; set; }
-    public Vector3 DesiredGroundPosition { get; set; }
+    public Vector3 GroundPosition { get; set; }
 
     // Slope Information (calculated properties)
     public float SlopeAngle => Vector3.Angle(Vector3.up, GroundNormal);
@@ -43,6 +50,9 @@ public class CharacterSensorContext : ICharacterSensorContext
     public bool CanWalkOnSlope => SlopeAngle <= 45f; // Walkable slope threshold
     public bool CanRunOnSlope => SlopeAngle <= 30f; // Running slope threshold
     public Vector3 SlopeDirection => Vector3.ProjectOnPlane(Vector3.down, GroundNormal).normalized;
+
+    public Vector3 GroundAdjustmentVelocity { get; set; } = Vector3.zero; // Used for adjusting position on ground
+    public Vector3 CastOrigin { get; set; }
 
     public void Initialize(GameObject owner)
     {

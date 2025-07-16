@@ -1,45 +1,39 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public abstract class BaseSensor<TContext> : ISensor<TContext> where TContext : ICharacterContext
+public abstract class BaseSensor : ISensor<CharacterContext>
 {
     public abstract SensorUpdateMode DefaultMode { get; }
 
-    protected LayerMask excludeLayers;
-    protected CapsuleCollider _collider;
     protected HashSet<Collider> _selfColliders;
     protected RaycastHit[] _hits = new RaycastHit[10];
     protected Vector3 _colliderCenter;
     protected float _sensorRadius;
     protected float _colliderHalfHeight;
 
-    public abstract void UpdateSensor(TContext context);
-    public virtual void Initialize(TContext context)
+    public abstract void UpdateSensor(CharacterContext context);
+    public virtual void Initialize(CharacterContext context)
     {
-        // Initialize sensor components, colliders, etc.
-        _collider = context.References.Transform.GetComponent<CapsuleCollider>();
-        if (_collider == null)
+        // Initialize sensor components, colliders, etc.        
+        if (context.References.Collider == null)
         {
             Debug.LogError("BaseSensor requires a CapsuleCollider component on the character.");
             return;
         }
 
-        excludeLayers = context.References.ExcludeLayers;
         InitializeSelfColliders(context);
         InitializeColliderVariables(context);
     }
 
-    protected void InitializeColliderVariables(TContext context)
+    protected void InitializeColliderVariables(CharacterContext context)
     {
-        _colliderCenter = context.References.Transform.position + _collider.center;
-        _colliderHalfHeight = _collider.height / 2f;
-        _sensorRadius = _collider.radius * 0.95f;
-
-
+        _colliderCenter = context.References.Transform.position + context.References.Collider.center;
+        _colliderHalfHeight = context.References.Collider.height / 2f;
+        _sensorRadius = context.References.Collider.radius * 0.95f;
 
     }
 
-    private void InitializeSelfColliders(TContext context)
+    private void InitializeSelfColliders(CharacterContext context)
     {
         _selfColliders = new HashSet<Collider>();
         var colliders = context.References.GameObject.GetComponentsInChildren<Collider>();
@@ -57,7 +51,5 @@ public abstract class BaseSensor<TContext> : ISensor<TContext> where TContext : 
         // Clean up resources if necessary
         _selfColliders.Clear();
         _hits = null;
-        _collider = null;
-        excludeLayers = 0;
     }
 }

@@ -2,7 +2,7 @@ using UnityEngine;
 /// <summary>
 /// Subcontext that holds all input-related fields for clarity and modularity.
 /// </summary>
-public class CharacterInputContext : ICharacterInputContext
+public class CharacterInputContext
 {
     public Vector2 MoveInput { get; set; }
     public Vector3 MoveDirection { get; set; }

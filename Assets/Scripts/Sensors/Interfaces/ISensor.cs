@@ -1,8 +1,8 @@
 using System;
 
-public interface ISensor<TContext> : IDisposable
+public interface ISensor<in TContext> : IDisposable
 {
-    void UpdateSensor(TContext context);
     SensorUpdateMode DefaultMode { get; }
+    void UpdateSensor(TContext context);
     void Initialize(TContext context);
 }

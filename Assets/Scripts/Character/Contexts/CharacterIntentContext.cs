@@ -4,7 +4,7 @@ using UnityEngine;
 /// <summary>
 /// Subcontext that holds interpreted intent flags.
 /// </summary>
-public class CharacterIntentContext : ICharacterIntentContext
+public class CharacterIntentContext
 {
     public Vector3 DesiredVelocity { get; set; }
     public Quaternion DesiredRotation { get; set; }

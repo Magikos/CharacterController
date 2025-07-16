@@ -197,6 +197,14 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>, I
         _currentState = null;
     }
 
+    public void Initialize(TContext context)
+    {
+        foreach (var state in _stateCache.Values)
+        {
+            state.Initialize(context);
+        }
+    }
+
     public void Dispose()
     {
         // Clean up resources if necessary

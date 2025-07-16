@@ -10,6 +10,7 @@ public interface IAdaptiveStateMachine<TContext> : IDisposable
 
     void FixedUpdate(TContext context);
     void ForceExit(TContext context);
+    void Initialize(TContext context);
     void LateUpdate(TContext context);
     void RegisterTransition(StateTransition<TContext> transition);
     void SetInitialState(TContext context, Type stateType);

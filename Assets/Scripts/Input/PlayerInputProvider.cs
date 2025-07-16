@@ -1,11 +1,11 @@
 using UnityEngine;
 
-public class PlayerInputProvider : IInputProvider
+public class PlayerInputProvider
 {
     private PlayerControls _controls;
     private Transform _cameraTransform;
 
-    public void Initialize(ICharacterContext context)
+    public void Initialize(CharacterContext context)
     {
         _controls = new PlayerControls();
         _controls.Character.Enable();
@@ -20,7 +20,7 @@ public class PlayerInputProvider : IInputProvider
         _controls.Dispose();
     }
 
-    public void UpdateInput(ICharacterContext context)
+    public void UpdateInput(CharacterContext context)
     {
         Vector2 input = _controls.Character.Move.ReadValue<Vector2>();
 

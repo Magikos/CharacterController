@@ -20,6 +20,8 @@ public abstract class BaseState<TContext> : IState<TContext>
         animator.CrossFade(animHash, transitionDuration);
     }
 
+    public virtual void Initialize(TContext context) { }
+
     public virtual void Dispose()
     {
         // Clean up resources if necessary

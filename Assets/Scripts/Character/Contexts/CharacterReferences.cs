@@ -1,19 +1,19 @@
 using UnityEngine;
 
-internal class CharacterReferences : ICharacterReferences
+public class CharacterReferences
 {
     public GameObject GameObject { get; private set; }
     public Transform Transform { get; private set; }
-    public int ExcludeLayers { get; private set; }
     public Camera Camera { get; private set; }
     public Transform CameraTransform { get; set; }
     public Animator Animator { get; set; }
+    public Rigidbody Rigidbody { get; set; }
+    public CapsuleCollider Collider { get; set; }
 
     public void Initialize(GameObject owner)
     {
         GameObject = owner;
         Transform = owner.transform;
-        ExcludeLayers = LayerMask.GetMask("UI", "Ignore Raycast");
 
         Camera = Camera.main;
         CameraTransform = Camera?.transform;
@@ -26,6 +26,18 @@ internal class CharacterReferences : ICharacterReferences
         if (Animator == null)
         {
             Debug.LogWarning("Animator component not found on the character. Animation states may not work correctly.");
+        }
+
+        Rigidbody = owner.GetComponent<Rigidbody>();
+        if (Rigidbody == null)
+        {
+            Debug.LogWarning("Rigidbody component not found on the character. Physics interactions may not work correctly.");
+        }
+
+        Collider = owner.GetComponent<CapsuleCollider>();
+        if (Collider == null)
+        {
+            Debug.LogWarning("CapsuleCollider component not found on the character. Collision detection may not work correctly.");
         }
     }
 

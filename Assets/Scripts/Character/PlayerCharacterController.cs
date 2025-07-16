@@ -1,9 +1,9 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
-public class PlayerCharacterController : BaseCharacterController<CharacterContext>
+public class PlayerCharacterController : BaseCharacterController
 {
-    protected override void InitializeStateMachine(CharacterContext context)
+    protected override void SetupStateMachine(CharacterContext context)
     {
         _stateMachine = new AdaptiveStateMachine<CharacterContext>()
         .WithStates(
@@ -53,14 +53,12 @@ public class PlayerCharacterController : BaseCharacterController<CharacterContex
         .WithNullDefault(new ErrorState("State not found"));
     }
 
-    protected override void InitializeSensors(CharacterContext context)
+    protected override void SetupSensors(CharacterContext context)
     {
         // Single integrated sensor - much cleaner!
         _sensorManager = new SensorManager<CharacterContext>(transform)
             .WithSensor(new GroundSensor())
             .WithTransition(CharacterSensorManagerBuilder.BuildDefaultTransitions());
-
-        _sensorManager.Initialize(context);
     }
 
 

@@ -2,7 +2,7 @@ using UnityEngine;
 /// <summary>
 /// Subcontext for real-time movement state - pure motion and physics.
 /// </summary>
-public class CharacterMotorContext : ICharacterMotorContext
+public class CharacterMotorContext
 {
     // Core Motion
     public Vector3 CurrentVelocity { get; set; }

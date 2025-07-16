@@ -1,6 +1,6 @@
 using System;
 
-public class CharacterVitalsSystem : ICharacterVitalsSystem
+public class CharacterVitalsSystem
 {
     // This class can be used to manage character vitals like health, stamina, etc.
     // Currently, it is empty but can be expanded as needed.
