@@ -54,6 +54,8 @@ public class CharacterSensorContext
     public Vector3 GroundAdjustmentVelocity { get; set; } = Vector3.zero; // Used for adjusting position on ground
     public Vector3 CastOrigin { get; set; }
 
+    public bool IsColliderOverlapping { get; set; }
+
     public void Initialize(GameObject owner)
     {
         // Initialize any references or state here

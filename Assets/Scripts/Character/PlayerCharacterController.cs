@@ -57,7 +57,7 @@ public class PlayerCharacterController : BaseCharacterController
     {
         // Single integrated sensor - much cleaner!
         _sensorManager = new SensorManager<CharacterContext>(transform)
-            .WithSensor(new GroundSensor())
+            .WithSensor(new ColliderOverlappingSensor(), new GroundSensor())
             .WithTransition(CharacterSensorManagerBuilder.BuildDefaultTransitions());
     }
 

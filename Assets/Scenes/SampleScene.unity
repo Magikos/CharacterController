@@ -5230,9 +5230,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.25
-  m_Height: 1.7940782
+  m_Height: 1.8
   m_Direction: 1
-  m_Center: {x: 0, y: 0.8970391, z: 0}
+  m_Center: {x: 0, y: 0.9, z: 0}
 --- !u!54 &1499470217
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -5272,6 +5272,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 43854c46a224aca44a3f621e56fee49d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: StateMachine::PlayerCharacterControllerRefactored
+  _stepHeightRatio: 0
+  _colliderHeight: 1.8
+  _colliderThickness: 0.5
+  _colliderOffset: {x: 0, y: 0.5, z: 0}
+  _gravity: -9.81
+  _gravityScale: 1
+  _terminalVelocity: 15
+  _maxGroundCheckDistance: 5
+  _groundedTolerance: 0.1
+  _movementSpeed: 5
+  _airControlRate: 2
+  _airFriction: 0.5
+  _groundFriction: 100
+  _useLocalMomentum: 1
+  _jumpForce: 10
+  _jumpDuration: 0.2
+  _slopeGravityScale: -9.81
+  _maxSlopeAngle: 45
+  _slopeRayLength: 1
+  _debugMode: 1
   IsPlayerControlled: 0
   IsLocal: 1
 --- !u!1 &1540076992

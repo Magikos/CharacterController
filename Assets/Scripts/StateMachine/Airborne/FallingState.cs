@@ -1,9 +1,5 @@
 using UnityEngine;
 
-#if UNITY_EDITOR
-using MiniTools.BetterGizmos;
-#endif
-
 public class FallingState : AirborneBaseState
 {
     private static readonly int FallAnim = Animator.StringToHash("Fall");

@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: 53fbcfc272be1524fac56143ac177194
+NativeFormatImporter:
+  externalObjects: {}
+  mainObjectFileID: 112000000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 264728
+  packageName: Oh My Gizmos
+  packageVersion: 1.0.0
+  assetPath: Assets/Crying Onion/OhMyGizmos/Demo/Demo/LightingData.asset
+  uploadId: 615088

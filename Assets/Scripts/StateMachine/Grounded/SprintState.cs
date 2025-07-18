@@ -8,6 +8,6 @@ public class SprintState : GroundedBaseState
     {
         ApplyRotation(context, context.Input.MoveDirection);
         ApplyMovement(context, context.Input.MoveDirection, LocomotionSettings.SprintSpeed);
-        context.Vitals.DrainStamina(context.FixedDeltaTime * 10f);
+        context.Vitals.DrainStamina(Time.fixedDeltaTime * 10f);
     }
 }

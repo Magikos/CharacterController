@@ -17,11 +17,15 @@ public class CharacterMotor
     private float maxStepHeight = 0.3f;
     private float skinWidth = 0.01f;
 
+    private Transform _transform;
     private Rigidbody _rigidbody;
     private CharacterContext _context;
 
     public void Initialize(CharacterContext context)
     {
+        //cache references
+        _transform = context.References.Transform;
+
         _rigidbody = context.References.Rigidbody;
         //_rigidbody.isKinematic = true;
         _rigidbody.freezeRotation = true;
@@ -29,7 +33,7 @@ public class CharacterMotor
         //_rigidbody.constraints = RigidbodyConstraints.FreezeRotation;
         //_rigidbody.interpolation = RigidbodyInterpolation.Interpolate;
 
-        _context = context; //cache local copy
+        _context = context;
         _context.Motor.CurrentVelocity = Vector3.zero;
         _context.Motor.Gravity = gravity;
     }
@@ -42,7 +46,9 @@ public class CharacterMotor
 
     public void ApplyMotion(CharacterContext context)
     {
+
     }
 
+    public Vector3 GetMomentum(CharacterContext context) => context.Config.UseLocalMomentum ? _transform.localToWorldMatrix * context.Motor.CurrentVelocity : context.Motor.CurrentVelocity;
     public void SetVelocity(CharacterContext context, Vector3 velocity) => _rigidbody.linearVelocity = velocity + context.Sensor.GroundAdjustmentVelocity;
 }

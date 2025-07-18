@@ -24,6 +24,16 @@ public class CharacterConfigContext
     public float TerminalVelocity { get; set; } = 15f; // Maximum falling speed
     public float MaxGroundCheckDistance { get; set; } = 5f; // Maximum distance for ground checks
     public float GroundedTolerance { get; set; } = 0.1f;
+    public float MovementSpeed { get; set; } = 5f; // Base movement speed
+    public float JumpForce { get; set; } = 10f; // Force applied
+    public float JumpDuration { get; set; } = 0.2f; // Duration of the jump
+    public float AirControlRate { get; set; } = 2f; // Rate of air control
+    public float AirFriction { get; set; } = 0.5f; // Air friction applied during jumps
+    public float GroundFriction { get; set; } = 100f;
+    public float SlopeGravityScale { get; set; } = -9.81f; // Gravity applied on slopes
+    public float MaxSlopeAngle { get; set; } = 45f; // Maximum angle for slope detection
+    public float SlopeRayLength { get; set; } = 1f; // Length of the ray used for slope detection
+    public bool UseLocalMomentum { get; set; } = true; // Use local momentum for movement calculations
 
     public void Initialize(GameObject owner)
     {

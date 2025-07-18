@@ -10,14 +10,14 @@ using UnityEngine;
 public class BaseCharacterController : MonoBehaviour
 {
     [Header("Collider Settings")]
-    [Tooltip("Enable to use the character's collider for ground detection and movement.")]
     [CharacterConfigContext("StepHeightRatio")][SerializeField][Range(0.0f, 1.0f)] protected float _stepHeightRatio = 0.1f; // Ratio of collider height to step height
     [CharacterConfigContext("ColliderHeight")][SerializeField] protected float _colliderHeight = 2f;
     [CharacterConfigContext("ColliderThickness")][SerializeField] protected float _colliderThickness = 1f;
     [CharacterConfigContext("ColliderOffset")][SerializeField] protected Vector3 _colliderOffset = Vector3.zero;
 
     [Header("Gravity Settings")]
-    [CharacterConfigContext("GravityScale")][SerializeField] protected float _gravityScale = 1f; // Scale for gravity effect
+    [CharacterConfigContext("Gravity")][SerializeField] protected float _gravity = -9.81f; // Default gravity value
+    [CharacterConfigContext("GravityScale")][SerializeField] protected float _gravityScale = 1f; // Scale for gravity effect    
     [CharacterConfigContext("TerminalVelocity")][SerializeField] protected float _terminalVelocity = 15f; // Maximum falling speed
 
     [Header("Ground Settings")]
@@ -26,7 +26,19 @@ public class BaseCharacterController : MonoBehaviour
 
     [Header("Movement Settings")]
     [CharacterConfigContext("MovementSpeed")][SerializeField] protected float _movementSpeed = 5f; // Base movement speed
+    [CharacterConfigContext("AirControlRate")][SerializeField] protected float _airControlRate = 2f; // Rate of air control
+    [CharacterConfigContext("AirFriction")][SerializeField] protected float _airFriction = 0.5f; // Air friction applied during jumps
+    [CharacterConfigContext("GroundFriction")][SerializeField] protected float _groundFriction = 100f; // Friction applied when grounded
+    [CharacterConfigContext("UseLocalMomentum")][SerializeField] protected bool _useLocalMomentum = true; // Use local momentum for movement calculations
+
+    [Header("Jump Settings")]
     [CharacterConfigContext("JumpForce")][SerializeField] protected float _jumpForce = 10f; // Force applied when jumping
+    [CharacterConfigContext("JumpDuration")][SerializeField] protected float _jumpDuration = 0.2f; // Duration of the jump
+
+    [Header("Slope Settings")]
+    [CharacterConfigContext("SlopeGravityScale")][SerializeField] protected float _slopeGravityScale = -9.81f; // Gravity applied on slopes
+    [CharacterConfigContext("MaxSlopeAngle")][SerializeField] protected float _maxSlopeAngle = 45f; // Maximum angle for slope detection
+    [CharacterConfigContext("SlopeRayLength")][SerializeField] protected float _slopeRayLength = 1f; // Length of the ray used for slope detection
 
     [Header("Debug Settings")]
     [CharacterConfigContext("DebugMode")][SerializeField] protected bool _debugMode = false; // Enable debug mode for additional logging and visual aids
@@ -37,6 +49,8 @@ public class BaseCharacterController : MonoBehaviour
     protected CharacterMotor _motor;
     protected IAdaptiveStateMachine<CharacterContext> _stateMachine;
     protected ISensorManager<CharacterContext> _sensorManager;
+
+    protected CharacterContextDebugDrawer _debugDrawer;
 
     public bool IsPlayerControlled = false;
     public bool IsLocal = true; // Can be used for multiplayer authority
@@ -101,12 +115,11 @@ public class BaseCharacterController : MonoBehaviour
         _context.Initialize(gameObject);
         RecalculateColliderDimensions();
 
-
         _input = new PlayerInputProvider();
-        _input?.Initialize(_context);
+        _input.Initialize(_context);
 
         _motor = new CharacterMotor();
-        _motor?.Initialize(_context);
+        _motor.Initialize(_context);
 
         SetupSensors(_context);
         _sensorManager.Initialize(_context);
@@ -114,23 +127,26 @@ public class BaseCharacterController : MonoBehaviour
 
         SetupStateMachine(_context);
         _stateMachine?.Initialize(_context);
+
+        _debugDrawer = new CharacterContextDebugDrawer();
+        _debugDrawer.Initialize(_context);
     }
 
     protected virtual void OnDisable()
     {
         // Cleanup handled by Unity lifecycle
-        _input?.Dispose();
+        _context.Dispose();
+        _input.Dispose();
+        _motor.Dispose();
+        _debugDrawer.Dispose();
+
         _sensorManager?.Dispose();
         _stateMachine?.Dispose();
-        _motor?.Dispose();
-        _context.Dispose();
     }
 
     protected virtual void Awake() { }
     protected virtual void Start()
     {
-        // Debug: Check if ground detection is working
-        Logwin.Log("CharacterController", $"After sensor update - IsGrounded: {_context.Sensor.IsGrounded}, Position: {transform.position}");
     }
 
     protected virtual void SetupStateMachine(CharacterContext context)
@@ -152,17 +168,20 @@ public class BaseCharacterController : MonoBehaviour
 
         _context.Config.DebugMode = _debugMode;
 
-        _input?.UpdateInput(_context);
+        _input.UpdateInput(_context);
         _sensorManager?.UpdateSensors(_context);
 
         _context.Intent.ResetFrameContext();
         _stateMachine?.Update(_context);
+
+        _debugDrawer.Enabled = _debugMode;
+        _debugDrawer.Update(_context);
     }
 
     protected virtual void FixedUpdate()
     {
         _stateMachine?.FixedUpdate(_context);
-        _motor?.ApplyMotion(_context);
+        _motor.ApplyMotion(_context);
     }
 
     protected virtual void LateUpdate()

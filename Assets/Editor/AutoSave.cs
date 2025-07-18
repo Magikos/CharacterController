@@ -26,6 +26,7 @@ namespace Magikorp
         private static AutoSaveConfig _config;
         private static CancellationTokenSource _tokenSource;
         private static Task _task;
+        private static float _lastSaveTime;
 
         [InitializeOnLoadMethod]
         private static void OnInitialize()
@@ -76,7 +77,13 @@ namespace Magikorp
         {
             while (!token.IsCancellationRequested)
             {
-                await Task.Delay(_config.Frequency * 1000 * 60, token);
+                if (Time.realtimeSinceStartup - _lastSaveTime < _config.Frequency * 60f)
+                {
+                    // wait the difference to the next save intervale with a minimum of 30 second
+                    float waitTime = Mathf.Max(30f, _config.Frequency * 60f - (Time.realtimeSinceStartup - _lastSaveTime));
+                    await Task.Delay((int)(waitTime * 1000), token);
+                    continue;
+                }
 
                 if (!_config.Enabled || Application.isPlaying || BuildPipeline.isBuildingPlayer || EditorApplication.isCompiling) continue;
                 if (!UnityEditorInternal.InternalEditorUtility.isApplicationActive) continue;
@@ -86,6 +93,8 @@ namespace Magikorp
                     EditorSceneManager.SaveOpenScenes();
                     if (_config.Logging) Debug.Log($"Auto-Saved at {DateTime.Now:h:mm:ss tt}");
                 }
+
+                _lastSaveTime = Time.realtimeSinceStartup;
             }
         }
 

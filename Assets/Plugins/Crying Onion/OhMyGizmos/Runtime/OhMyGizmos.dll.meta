@@ -1,0 +1,40 @@
+fileFormatVersion: 2
+guid: b38dd9f1f7410664f9a1f4220c018620
+PluginImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  iconMap: {}
+  executionOrder: {}
+  defineConstraints: []
+  isPreloaded: 0
+  isOverridable: 0
+  isExplicitlyReferenced: 0
+  validateReferences: 1
+  platformData:
+  - first:
+      Any: 
+    second:
+      enabled: 1
+      settings: {}
+  - first:
+      Editor: Editor
+    second:
+      enabled: 0
+      settings:
+        DefaultValueInitialized: true
+  - first:
+      Windows Store Apps: WindowsStoreApps
+    second:
+      enabled: 0
+      settings:
+        CPU: AnyCPU
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 264728
+  packageName: Oh My Gizmos
+  packageVersion: 1.0.0
+  assetPath: Assets/Crying Onion/OhMyGizmos/Runtime/OhMyGizmos.dll
+  uploadId: 615088

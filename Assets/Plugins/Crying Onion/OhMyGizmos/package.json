@@ -1,0 +1,19 @@
+{
+  "name": "com.cryingonion.ohmygizmos",
+  "displayName": "Oh My Gizmos",
+  "version": "1.0.0",
+  "dependencies": {},
+  "enableLockFile": true,
+  "resolutionStrategy": "highestMinor",
+  "unity": "2022.3",
+  "keywords": [
+    "Tool",
+    "Editor"
+  ],
+  "description": "Tool designed for use gizmos in editor, runtime and builded game.",
+  "author": {
+    "name": "Lobinux",
+    "email": "lobinuxsoft@gmail.com",
+    "url": "https://www.linkedin.com/in/lobinux/"
+  }
+}

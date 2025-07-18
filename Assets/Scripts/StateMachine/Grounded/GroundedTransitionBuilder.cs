@@ -100,7 +100,7 @@ public static class GroundedTransitionBuilder
 
     }
 
-    public static Type PickMovementState(ICharacterContext ctx)
+    public static Type PickMovementState(CharacterContext ctx)
     {
         float magnitude = Mathf.Max(ctx.Input.MoveInputMagnitude, ctx.Motor.CurrentVelocity.magnitude);
 

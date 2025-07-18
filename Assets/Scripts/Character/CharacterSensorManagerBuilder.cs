@@ -7,6 +7,22 @@ public static class CharacterSensorManagerBuilder
     {
         return new SensorTransition<CharacterContext>[]
         {
+            // Collider overlapping sensor - always active
+            new SensorTransition<CharacterContext>
+            {
+                SensorType = typeof(ColliderOverlappingSensor),
+                Mode = SensorUpdateMode.EveryFrame,
+                Condition = ctx => IsMoving(ctx)
+            },
+
+            // Collider overlapping sensor - always active
+            new SensorTransition<CharacterContext>
+            {
+                SensorType = typeof(ColliderOverlappingSensor),
+                Mode = SensorUpdateMode.Reduced,
+                Condition = ctx => IsIdle(ctx)
+            },
+
             // Idle state - minimal sensor updates
             new SensorTransition<CharacterContext>
             {
