@@ -1,5 +1,3 @@
-using Codice.CM.Common;
-using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer.Explorer.Operations;
 using UnityEngine;
 
 /// <summary>
