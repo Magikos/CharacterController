@@ -11,11 +11,14 @@ namespace Rules.Core
 
     public class TrueRule<TContext> : ConstantRule<TContext>
     {
+        public static readonly TrueRule<TContext> Instance = new TrueRule<TContext>();
+
         public TrueRule() : base(true) { }
     }
 
     public class FalseRule<TContext> : ConstantRule<TContext>
     {
+        public static readonly FalseRule<TContext> Instance = new FalseRule<TContext>();
         public FalseRule() : base(false) { }
     }
 }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Magikorp
 {
@@ -40,23 +41,24 @@ namespace Magikorp
 
         private static void FetchConfig()
         {
-            while (true)
+            if (_config != null) return;
+
+            var path = GetConfigPath();
+
+            if (path == null)
             {
-                if (_config != null) return;
-
-                var path = GetConfigPath();
-
-                if (path == null)
+                // Ensure Settings folder exists
+                if (!AssetDatabase.IsValidFolder("Assets/Settings"))
                 {
-                    AssetDatabase.CreateAsset(CreateInstance<AutoSaveConfig>(), $"Assets/Settings/{nameof(AutoSaveConfig)}.asset");
-                    Debug.Log("A config file has been created in the Settings folder of your project.<b> You can move this anywhere you'd like.</b>");
-                    continue;
+                    AssetDatabase.CreateFolder("Assets", "Settings");
                 }
-
-                _config = AssetDatabase.LoadAssetAtPath<AutoSaveConfig>(path);
-
-                break;
+                AssetDatabase.CreateAsset(CreateInstance<AutoSaveConfig>(), $"Assets/Settings/{nameof(AutoSaveConfig)}.asset");
+                AssetDatabase.SaveAssets();
+                Debug.Log("A config file has been created in the Settings folder of your project.<b> You can move this anywhere you'd like.</b>");
+                path = GetConfigPath();
             }
+
+            _config = AssetDatabase.LoadAssetAtPath<AutoSaveConfig>(path);
         }
 
         private static string GetConfigPath()
@@ -70,7 +72,7 @@ namespace Magikorp
         {
             if (_task == null) return;
             _tokenSource.Cancel();
-            _task.Wait();
+            try { _task.Wait(); } catch (AggregateException) { /* Task was cancelled, ignore */ }
         }
 
         private static async Task SaveInterval(CancellationToken token)
@@ -100,9 +102,10 @@ namespace Magikorp
 
         public static bool IsDirty()
         {
-            for (int i = 0; i < EditorSceneManager.sceneCount; i++)
+            if (_config == null) return false;
+            for (int i = 0; i < SceneManager.sceneCount; i++)
             {
-                if (EditorSceneManager.GetSceneAt(i).isDirty) return true;
+                if (SceneManager.GetSceneAt(i).isDirty) return true;
             }
 
             return false;

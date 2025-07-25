@@ -86,7 +86,10 @@ public class BaseCharacterController : MonoBehaviour
         float length = _colliderHeight * (1f - _stepHeightRatio) * 0.5f + _colliderHeight * safetyDistanceFactor;
         _context.Sensor.BaseSensorRange = length * (1f + safetyDistanceFactor) * transform.lossyScale.x;
         _context.Sensor.BaseCastLength = length * transform.lossyScale.x;
-        _context.Sensor.CastOrigin = collider.bounds.center;
+
+        float localBottom = collider.center.y - (collider.height * 0.5f);
+        Vector3 localBottomOffset = new Vector3(0, localBottom, 0);
+        _context.Sensor.CastOrigin = localBottomOffset;
 
         //update layer mask for sensors
         int objectLayer = gameObject.layer;

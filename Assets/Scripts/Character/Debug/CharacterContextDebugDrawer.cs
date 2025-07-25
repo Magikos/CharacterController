@@ -7,12 +7,18 @@ public class CharacterContextDebugDrawer : IDisposable
 {
     // Unique IDs for Gizmos
     private readonly Guid _characterColliderId = Guid.NewGuid();
+    private readonly Guid _groundCheckId = Guid.NewGuid();
+    private readonly Guid _groundNormalId = Guid.NewGuid();
     private readonly Guid _rigidbodyVelocityId = Guid.NewGuid();
     private readonly Guid _stepHeightId = Guid.NewGuid();
     private readonly Guid _desiredVelocityId = Guid.NewGuid();
 
     // Colors
     private readonly Gradient _yellowGradient;
+    private readonly Gradient _blueGradient;
+    private readonly Gradient _redGradient;
+    private readonly Gradient _greenGradient;
+
     private readonly Color _redColor = new Color(1f, 0f, 0f, 0.25f);
     private readonly Color _cyanColor = new Color(0f, 1f, 1f, 0.25f);
 
@@ -29,6 +35,36 @@ public class CharacterContextDebugDrawer : IDisposable
             new GradientColorKey(Color.yellow, 1f)
         };
         _yellowGradient.alphaKeys = new GradientAlphaKey[] {
+            new GradientAlphaKey(1f, 0f),
+            new GradientAlphaKey(1f, 1f)
+        };
+
+        _blueGradient = new Gradient();
+        _blueGradient.colorKeys = new GradientColorKey[] {
+            new GradientColorKey(Color.blue, 0f),
+            new GradientColorKey(Color.blue, 1f)
+        };
+        _blueGradient.alphaKeys = new GradientAlphaKey[] {
+            new GradientAlphaKey(1f, 0f),
+            new GradientAlphaKey(1f, 1f)
+        };
+
+        _redGradient = new Gradient();
+        _redGradient.colorKeys = new GradientColorKey[] {
+            new GradientColorKey(Color.red, 0f),
+            new GradientColorKey(Color.red, 1f)
+        };
+        _redGradient.alphaKeys = new GradientAlphaKey[] {
+            new GradientAlphaKey(1f, 0f),
+            new GradientAlphaKey(1f, 1f)
+        };
+
+        _greenGradient = new Gradient();
+        _greenGradient.colorKeys = new GradientColorKey[] {
+            new GradientColorKey(Color.green, 0f),
+            new GradientColorKey(Color.green, 1f)
+        };
+        _greenGradient.alphaKeys = new GradientAlphaKey[] {
             new GradientAlphaKey(1f, 0f),
             new GradientAlphaKey(1f, 1f)
         };
@@ -93,6 +129,28 @@ public class CharacterContextDebugDrawer : IDisposable
         );
 
 
+        // Draw a sphere at the ground check position, colored by IsGrounded
+        Gradient groundColor = context.Sensor.IsGrounded ? _greenGradient : _redGradient;
+        OhMyGizmos.Line(
+            _groundCheckId,
+            context.Sensor.CastOrigin,
+            context.Sensor.CastOrigin + Vector3.down * context.Sensor.BaseCastLength,
+            groundColor
+        );
+
+        // Ground normal visualization
+        if (context.Sensor.IsGrounded)
+        {
+            OhMyGizmos.Arrow(
+                _groundNormalId,
+                context.Sensor.GroundPosition,
+                context.Sensor.GroundNormal,
+                0.05f,
+                0.5f,
+                _blueGradient
+            );
+        }
+
         // Possible other visualizations: 
 
         // // Step height indicator (horizontal line at max step height above feet)        
@@ -103,22 +161,6 @@ public class CharacterContextDebugDrawer : IDisposable
 
 
 
-        // // Draw a sphere at the ground check position, colored by IsGrounded
-        // Color groundColor = context.Sensor.IsGrounded ? Color.green : Color.red;
-        // OhMyGizmos.Sphere(context.Sensor.GroundPosition, 0.1f, groundColor);
-
-        // // 1. Ground normal visualization
-        // if (context.Sensor.IsGrounded)
-        // {
-        //     OhMyGizmos.Arrow(
-        //         Guid.NewGuid(),
-        //         context.Sensor.GroundPosition,
-        //         context.Sensor.GroundNormal,
-        //         0.05f,
-        //         0.5f,
-        //         Color.blue //todo: use a consistent color scheme
-        //     );
-        // }
 
         // // 3. Sensor/probe rays (if available)
         // if (context.Sensor.ProbeOrigins != null && context.Sensor.ProbeDirections != null)

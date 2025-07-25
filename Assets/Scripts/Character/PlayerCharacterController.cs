@@ -20,7 +20,7 @@ public class PlayerCharacterController : BaseCharacterController
                         new HardLandingState()
                     )
                     .WithTransitions(GroundedTransitionBuilder.BuildDefaultTransitions())
-                    .WithInitialState(_context, typeof(IdleState))
+                    .WithInitialState(typeof(IdleState))
             ),
             new AirborneState().WithStateMachine(
                 new AdaptiveStateMachine<CharacterContext>()
@@ -33,7 +33,7 @@ public class PlayerCharacterController : BaseCharacterController
                         ResolveTo = (_, _) => typeof(FallingState)
                     }
                 )
-                .WithInitialState(_context, typeof(FallingState))
+                .WithInitialState(typeof(FallingState))
         ))
         .WithTransitions(
             new StateTransition<CharacterContext>
@@ -49,7 +49,7 @@ public class PlayerCharacterController : BaseCharacterController
                 ResolveTo = (_, _) => typeof(Grounded)
             }
         )
-        .WithInitialState(_context, typeof(Grounded))
+        .WithInitialState(typeof(Grounded))
         .WithNullDefault(new ErrorState("State not found"));
     }
 

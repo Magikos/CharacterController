@@ -20,6 +20,7 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>, I
     private Dictionary<Type, IState<TContext>> _stateCache = new();
     private Type? _evaluateExitType = null;
     private float _blockTimer = 0f;
+    private bool _isInitialized = false;
 
     private bool _defaultOnNullState = false;
     private Type? _defaultIfNullType = null;
@@ -47,9 +48,9 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>, I
         return this;
     }
 
-    public AdaptiveStateMachine<TContext> WithInitialState(TContext context, Type stateType)
+    public AdaptiveStateMachine<TContext> WithInitialState(Type stateType)
     {
-        SetInitialState(context, stateType);
+        SetInitialState(stateType);
         return this;
     }
 
@@ -64,10 +65,22 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>, I
         }
     }
 
-    public void SetInitialState(TContext context, Type stateType) => SwitchState(context, stateType, true);
+    public void SetInitialState(Type stateType)
+    {
+        if (!_stateCache.TryGetValue(stateType, out var initialState))
+        {
+            Debug.LogError($"[FSM] : Invalid initial state type: {stateType.Name}");
+            return;
+        }
+
+        _currentState = initialState;
+    }
+
 
     public void Update(TContext context)
     {
+        if (!_isInitialized) Initialize(context);
+
         if (_currentState == null && _defaultOnNullState && _defaultIfNullType != null)
         {
             SwitchState(context, _defaultIfNullType, true);
@@ -199,10 +212,15 @@ public class AdaptiveStateMachine<TContext> : IAdaptiveStateMachine<TContext>, I
 
     public void Initialize(TContext context)
     {
+        if (_isInitialized) return;
+
         foreach (var state in _stateCache.Values)
         {
             state.Initialize(context);
         }
+
+        SwitchState(context, _currentState?.GetType(), true);
+        _isInitialized = true;
     }
 
     public void Dispose()

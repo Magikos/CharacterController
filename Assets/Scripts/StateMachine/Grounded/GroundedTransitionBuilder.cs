@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Rules.Core;
 using UnityEngine;
 
 public static class GroundedTransitionBuilder
@@ -7,97 +8,109 @@ public static class GroundedTransitionBuilder
     public static IEnumerable<StateTransition<CharacterContext>> BuildDefaultTransitions()
     {
         // Sliding transitions (highest priority - environmental reactions)
+
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(WalkState),
-            Condition = ctx => ctx.Sensor.ShouldSlide,
+            Condition = ShouldSlideRule.Instance,
             ResolveTo = (_, _) => typeof(SlidingState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(RunState),
-            Condition = ctx => ctx.Sensor.ShouldSlide,
+            Condition = ShouldSlideRule.Instance,
             ResolveTo = (_, _) => typeof(SlidingState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(SprintState),
-            Condition = ctx => ctx.Sensor.ShouldSlide,
+            Condition = ShouldSlideRule.Instance,
             ResolveTo = (_, _) => typeof(SlidingState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(SlidingState),
-            Condition = ctx => !ctx.Sensor.ShouldSlide && ctx.Input.MoveInputMagnitude > LocomotionSettings.WalkInputThreshold,
+            Condition = new AndRule<CharacterContext>(
+                new NotRule<CharacterContext>(ShouldSlideRule.Instance),
+                new MoveInputGreaterThanRule(LocomotionSettings.WalkInputThreshold)
+            ),
             ResolveTo = (_, _) => typeof(WalkState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(SlidingState),
-            Condition = ctx => !ctx.Sensor.ShouldSlide && ctx.Input.MoveInputMagnitude <= LocomotionSettings.WalkInputThreshold,
+            Condition = new AndRule<CharacterContext>(
+                new NotRule<CharacterContext>(ShouldSlideRule.Instance),
+                new NotRule<CharacterContext>(new MoveInputGreaterThanRule(LocomotionSettings.WalkInputThreshold))
+            ),
             ResolveTo = (_, _) => typeof(IdleState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(IdleState),
-            Condition = ctx => ctx.Input.MoveInputMagnitude > LocomotionSettings.WalkInputThreshold,
+            Condition = new MoveInputGreaterThanRule(LocomotionSettings.WalkInputThreshold),
             ResolveTo = (_, _) => typeof(WalkState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(WalkState),
-            Condition = ctx => ctx.Input.MoveInputMagnitude < LocomotionSettings.WalkInputThreshold,
+            Condition = new NotRule<CharacterContext>(new MoveInputGreaterThanRule(LocomotionSettings.WalkInputThreshold)),
             ResolveTo = (_, _) => typeof(IdleState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(WalkState),
-            Condition = ctx => ctx.Input.MoveInputMagnitude >= LocomotionSettings.RunInputThreshold,
+            Condition = new MoveInputGreaterThanRule(LocomotionSettings.RunInputThreshold),
             ResolveTo = (_, _) => typeof(RunState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(RunState),
-            Condition = ctx => ctx.Input.MoveInputMagnitude < LocomotionSettings.RunInputThreshold,
+            Condition = new NotRule<CharacterContext>(new MoveInputGreaterThanRule(LocomotionSettings.RunInputThreshold)),
             ResolveTo = (_, _) => typeof(WalkState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(RunState),
-            Condition = ctx => ctx.Input.IsSprintPressed && ctx.Vitals.CanSprint,
+            Condition = new AndRule<CharacterContext>(
+                IsSprintPressedRule.Instance,
+                HasJumpVitalsRule.Instance // Assuming CanSprint is similar to CanJump
+            ),
             ResolveTo = (_, _) => typeof(SprintState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(SprintState),
-            Condition = ctx => !ctx.Input.IsSprintPressed || !ctx.Vitals.CanSprint,
+            Condition = new OrRule<CharacterContext>(
+                new NotRule<CharacterContext>(IsSprintPressedRule.Instance),
+                new NotRule<CharacterContext>(HasJumpVitalsRule.Instance)
+            ),
             ResolveTo = (_, _) => typeof(RunState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = null, // Any grounded state
-            Condition = ctx => ctx.Input.IsJumpPressed && ctx.Sensor.IsGrounded && ctx.Vitals.CanJump,
+            Condition = new CanJumpRule(),
             ResolveTo = (_, _) => typeof(JumpState)
         };
 
         yield return new StateTransition<CharacterContext>
         {
             From = typeof(SoftLandingState),
-            Condition = ctx => true, // Always transition from LandedState
+            Condition = TrueRule<CharacterContext>.Instance, // Always transition
             ResolveTo = (from, ctx) => PickMovementState(ctx)
         };
-
     }
 
     public static Type PickMovementState(CharacterContext ctx)

@@ -1,9 +1,8 @@
 using Rules.Core;
 
-public class MoveInputGreaterThanRule : IRule<CharacterContext>
+public class MoveInputGreaterThanRule : ThresholdRule<CharacterContext, float>
 {
-    private readonly float _threshold;
-    public MoveInputGreaterThanRule(float threshold) => _threshold = threshold;
-    public bool Evaluate(CharacterContext ctx) => ctx.Input.MoveInputMagnitude > _threshold;
-    public static implicit operator System.Func<CharacterContext, bool>(MoveInputGreaterThanRule rule) => rule.Evaluate;
+    public MoveInputGreaterThanRule(float threshold) : base(ctx => ctx.Input.MoveInputMagnitude, threshold, (a, b) => a.CompareTo(b) > 0)
+    {
+    }
 }

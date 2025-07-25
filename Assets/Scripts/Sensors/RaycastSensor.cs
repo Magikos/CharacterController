@@ -1,7 +1,7 @@
 using NUnit.Framework;
 using UnityEngine;
 
-public class RaycastSensor : ISensor<CharacterContext>
+public abstract class RaycastSensor : ISensor<CharacterContext>
 {
     public enum CastDirection
     {
@@ -13,11 +13,9 @@ public class RaycastSensor : ISensor<CharacterContext>
         Right
     }
 
-    public virtual SensorUpdateMode DefaultMode => throw new System.NotImplementedException();
+    public abstract SensorUpdateMode DefaultMode { get; }
     public LayerMask ExcludeLayers = 255;
-    public float CastLength = 1f;
 
-    protected Vector3 _origin;
     protected Transform _transform;
     protected CastDirection _direction;
     protected RaycastHit _hit;
@@ -32,15 +30,14 @@ public class RaycastSensor : ISensor<CharacterContext>
     public virtual void Initialize(CharacterContext context)
     {
         _transform = context.References.Transform;
-        _origin = _transform.position;
-        _direction = CastDirection.Forward;
+        _direction = CastDirection.Down;
     }
 
     public virtual void UpdateSensor(CharacterContext context)
     {
-        Vector3 worldOrigin = _transform.TransformPoint(_origin);
+        Vector3 worldOrigin = _transform.TransformPoint(context.Sensor.CastOrigin);
         Vector3 castDirection = GetCastDirection();
-        if (Physics.Raycast(worldOrigin, castDirection, out _hit, CastLength, ~ExcludeLayers, QueryTriggerInteraction.Ignore))
+        if (Physics.Raycast(worldOrigin, castDirection, out _hit, context.Sensor.BaseCastLength, ~ExcludeLayers, QueryTriggerInteraction.Ignore))
         {
             // Handle hit
             OnHit(_hit);
@@ -50,7 +47,6 @@ public class RaycastSensor : ISensor<CharacterContext>
     protected virtual void OnHit(RaycastHit hit) { }
 
     public virtual void SetCastDirection(CastDirection direction) => _direction = direction;
-    public virtual void SetCastOrigin(Vector3 position) => _origin = _transform.InverseTransformPoint(position);
 
     public virtual bool IsHit() => _hit.collider != null;
     public virtual float GetHitDistance() => _hit.distance;
